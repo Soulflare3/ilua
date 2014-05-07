@@ -103,13 +103,14 @@ bool iskindof(lua_State* L, char const* name, char const* base);
 // use: Type* ptr = new(L, "type") Type(args);
 // type has to be declared beforehand
 void* operator new(size_t count, lua_State* L, char const* name);
+// delete is only defined to handle constructor exceptions (don't do that)
 void operator delete(void* ptr, lua_State* L, char const* name);
 namespace ilua
 {
 
 // alternative allocator for simple structs; creates a new type if necessary
 template<class T>
-T* newstruct(lua_State* L, char const* name = NULL, int size = sizeof(T))
+T* newstruct(lua_State* L, char const* name = NULL, size_t size = sizeof(T))
 {
   T* ptr = (T*) lua_newuserdata(L, size);
   lua_getfield(L, LUA_REGISTRYINDEX, ILUA_TABLE_META);
@@ -127,6 +128,11 @@ T* newstruct(lua_State* L, char const* name = NULL, int size = sizeof(T))
 }
 
 class Engine;
+// types derived from Object (make sure to specify the base class in ilua::newtype):
+// - automatically receive the engine pointer on creation
+// - can be pushed onto the stack by pointer with ilua::pushobject
+// - have reference counting that prevents Lua from garbage collecting the object
+// - should only be constructed with the new(...) operator defined above
 class Object
 {
   volatile long ref;
@@ -150,8 +156,9 @@ public:
 
 // push the original userdata associated with `obj'
 void pushobject(lua_State* L, Object* obj);
-// is value at index `pos' of type `name' or derived from it
+// is value at index `pos' of type `name' or derived from it?
 bool iskindof(lua_State* L, int pos, char const* name);
+// a little slower than the above since it has to figure out the type name first
 template<class T>
 bool iskindof(lua_State* L, int pos)
 {
@@ -178,6 +185,7 @@ T* toobject(lua_State* L, int pos, char const* name = NULL)
     return (T*) lua_touserdata(L, pos);
   return NULL;
 }
+// cast to plain struct type - only use for internal types not visible to lua
 template<class T>
 T* tostruct(lua_State* L, int pos)
 {
@@ -216,19 +224,13 @@ T* checkobject(lua_State* L, int pos, char const* name = NULL)
 template<class T>
 T* checkstruct(lua_State* L, int pos)
 {
-  if (!lua_isuserdata(L, pos) || !lua_getmetatable(L, pos))
+  T* result = tostruct<T>(L, pos);
+  if (!result)
   {
     char const* msg = lua_pushfstring(L, "%s expected, got %s", basicid<T>(), luaL_typename(L, pos));
     luaL_argerror(L, pos, msg);
   }
-  lua_rawgeti(L, -1, 0);
-  if (!lua_isstring(L, -1) || strcmp(lua_tostring(L, -1), basicid<T>()))
-  {
-    char const* msg = lua_pushfstring(L, "%s expected, got %s", basicid<T>(), luaL_typename(L, pos));
-    luaL_argerror(L, pos, msg);
-  }
-  lua_pop(L, 2);
-  return (T*) lua_touserdata(L, pos);
+  return result;
 }
 
 // expand object to allow table-like access
