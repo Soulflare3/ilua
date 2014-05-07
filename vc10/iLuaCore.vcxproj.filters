@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{65cca782-516e-48f8-a7c8-6bcbd3ad42a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Header Files">
+      <UniqueIdentifier>{de850bc2-39be-46f9-8f4f-47aad0bfcb3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Source Files">
+      <UniqueIdentifier>{9410bcb2-dcf2-44d8-99d9-faab95727460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua">
+      <UniqueIdentifier>{8e0013d3-aa79-474e-8160-d2af3036fa9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua\Header Files">
+      <UniqueIdentifier>{1b0e5f59-7535-4c34-aced-be0270cfe85e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua\Source Files">
+      <UniqueIdentifier>{a5792175-240c-442d-b67e-7b5671940b5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="api">
+      <UniqueIdentifier>{81cd6b38-b000-40db-85d1-f0c9c3978dbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="api\Header Files">
+      <UniqueIdentifier>{54c1b2d1-6922-45de-8c5f-6f3e655eba47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="api\Source Files">
+      <UniqueIdentifier>{cdb7653d-dbfd-4683-a1cf-b1d93cab399e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frameui">
+      <UniqueIdentifier>{9865bde0-c9fe-4c02-953b-8ff1a96ecb2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frameui\Header Files">
+      <UniqueIdentifier>{8816cf57-2fd5-4ffd-9021-eb8494c81624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frameui\Source Files">
+      <UniqueIdentifier>{f51d9e61-3089-445d-8b90-1167444b29bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{bfdb41fb-1a49-440a-b075-9bb80d267fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\Header Files">
+      <UniqueIdentifier>{f7dd9c68-2087-4f4f-b369-08569512c4ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\Source Files">
+      <UniqueIdentifier>{6a57ddac-d541-4ef8-82b2-9edb2bea0ded}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\base\checksum.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\dictionary.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\error.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\file.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\gzmemory.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\hashmap.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\json.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\pool.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\regexp.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\string.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\timer.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\tinyxml2.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\utf8.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\utils.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\version.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\thread.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\binds.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\engine.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\sync.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\controlframes.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\dragdrop.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\fontsys.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\frame.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\framewnd.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\window.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\editor.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\epainter.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\ekeydown.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\mainwnd.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\filetab.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\aboutdlg.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\args.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\frameui\listctrl.cpp">
+      <Filter>frameui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\maindbg.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\varlist.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\luaeval.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ui\varedit.cpp">
+      <Filter>ui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\wstring.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\ilua.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\utf8.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\regexp.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\slowop.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\stream.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\api\stream.cpp">
+      <Filter>api\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\base\array.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\checksum.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\dictionary.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\error.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\file.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\gzmemory.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\hashmap.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\json.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\object.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\optional.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\pair.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\point.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\pool.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\ptr.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\regexp.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\string.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\timer.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\tinyxml2.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\types.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\utf8.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\utils.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\version.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\thread.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\api\engine.h">
+      <Filter>api\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\controlframes.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\dragdrop.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\fontsys.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\frame.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\framewnd.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\window.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ui\editor.h">
+      <Filter>ui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ui\mainwnd.h">
+      <Filter>ui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\filetab.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ui\aboutdlg.h">
+      <Filter>ui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\args.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\frameui\listctrl.h">
+      <Filter>frameui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ui\varlist.h">
+      <Filter>ui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ui\luaeval.h">
+      <Filter>ui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\wstring.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\ilua.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\slowop.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\stream.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="iLuaCore.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="breakpoint.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="curline.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="xnormal.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="xnormal.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="xhover.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="xpressed.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mainwnd.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vsplit.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="lualogo.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="hsplit.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="blank.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="tplus.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="tminus.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon2.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mainwndred.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mainwndgreen.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

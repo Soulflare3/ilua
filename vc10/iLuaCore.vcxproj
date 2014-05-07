@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E98C320A-B4F2-4F3C-B0D2-BB5EEA685B33}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>iLuaCore</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\debug\</OutDir>
+    <IntDir>..\debug\obj\core\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\release\</OutDir>
+    <IntDir>..\release\obj\core\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>./;../src;../libs</AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)/dummy/%(RelativeDir)/</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../libs/pcre/pcre.lib;winmm.lib;comctl32.lib;../libs/lua/lua.lib;../libs/zlib/zlib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level2</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../src;../libs</AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)/dummy/%(RelativeDir)/</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;comctl32.lib;../libs/lua/lua_r.lib;../libs/zlib/zlib_r.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\base\args.cpp" />
+    <ClCompile Include="..\src\base\checksum.cpp" />
+    <ClCompile Include="..\src\base\dictionary.cpp" />
+    <ClCompile Include="..\src\base\error.cpp" />
+    <ClCompile Include="..\src\base\file.cpp" />
+    <ClCompile Include="..\src\base\gzmemory.cpp" />
+    <ClCompile Include="..\src\base\hashmap.cpp" />
+    <ClCompile Include="..\src\base\json.cpp" />
+    <ClCompile Include="..\src\base\thread.cpp" />
+    <ClCompile Include="..\src\base\pool.cpp" />
+    <ClCompile Include="..\src\base\regexp.cpp" />
+    <ClCompile Include="..\src\base\string.cpp" />
+    <ClCompile Include="..\src\base\timer.cpp" />
+    <ClCompile Include="..\src\base\tinyxml2.cpp" />
+    <ClCompile Include="..\src\base\utf8.cpp" />
+    <ClCompile Include="..\src\base\utils.cpp" />
+    <ClCompile Include="..\src\base\version.cpp" />
+    <ClCompile Include="..\src\base\wstring.cpp" />
+    <ClCompile Include="..\src\core\api\binds.cpp" />
+    <ClCompile Include="..\src\core\api\stream.cpp" />
+    <ClCompile Include="..\src\core\api\engine.cpp" />
+    <ClCompile Include="..\src\core\api\regexp.cpp" />
+    <ClCompile Include="..\src\core\api\sync.cpp" />
+    <ClCompile Include="..\src\core\api\utf8.cpp" />
+    <ClCompile Include="..\src\core\app.cpp" />
+    <ClCompile Include="..\src\core\frameui\controlframes.cpp" />
+    <ClCompile Include="..\src\core\frameui\dragdrop.cpp" />
+    <ClCompile Include="..\src\core\frameui\filetab.cpp" />
+    <ClCompile Include="..\src\core\frameui\fontsys.cpp" />
+    <ClCompile Include="..\src\core\frameui\frame.cpp" />
+    <ClCompile Include="..\src\core\frameui\framewnd.cpp" />
+    <ClCompile Include="..\src\core\frameui\listctrl.cpp" />
+    <ClCompile Include="..\src\core\frameui\window.cpp" />
+    <ClCompile Include="..\src\core\main.cpp" />
+    <ClCompile Include="..\src\core\registry.cpp" />
+    <ClCompile Include="..\src\core\ui\aboutdlg.cpp" />
+    <ClCompile Include="..\src\core\ui\editor.cpp" />
+    <ClCompile Include="..\src\core\ui\ekeydown.cpp" />
+    <ClCompile Include="..\src\core\ui\epainter.cpp" />
+    <ClCompile Include="..\src\core\ui\luaeval.cpp" />
+    <ClCompile Include="..\src\core\ui\maindbg.cpp" />
+    <ClCompile Include="..\src\core\ui\mainwnd.cpp" />
+    <ClCompile Include="..\src\core\ui\varedit.cpp" />
+    <ClCompile Include="..\src\core\ui\varlist.cpp" />
+    <ClCompile Include="..\src\ilua\stream.cpp" />
+    <ClCompile Include="..\src\ilua\ilua.cpp" />
+    <ClCompile Include="..\src\ilua\slowop.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\base\args.h" />
+    <ClInclude Include="..\src\base\array.h" />
+    <ClInclude Include="..\src\base\checksum.h" />
+    <ClInclude Include="..\src\base\dictionary.h" />
+    <ClInclude Include="..\src\base\error.h" />
+    <ClInclude Include="..\src\base\file.h" />
+    <ClInclude Include="..\src\base\gzmemory.h" />
+    <ClInclude Include="..\src\base\hashmap.h" />
+    <ClInclude Include="..\src\base\json.h" />
+    <ClInclude Include="..\src\base\object.h" />
+    <ClInclude Include="..\src\base\optional.h" />
+    <ClInclude Include="..\src\base\pair.h" />
+    <ClInclude Include="..\src\base\point.h" />
+    <ClInclude Include="..\src\base\pool.h" />
+    <ClInclude Include="..\src\base\ptr.h" />
+    <ClInclude Include="..\src\base\regexp.h" />
+    <ClInclude Include="..\src\base\string.h" />
+    <ClInclude Include="..\src\base\thread.h" />
+    <ClInclude Include="..\src\base\timer.h" />
+    <ClInclude Include="..\src\base\tinyxml2.h" />
+    <ClInclude Include="..\src\base\types.h" />
+    <ClInclude Include="..\src\base\utf8.h" />
+    <ClInclude Include="..\src\base\utils.h" />
+    <ClInclude Include="..\src\base\version.h" />
+    <ClInclude Include="..\src\base\wstring.h" />
+    <ClInclude Include="..\src\core\api\engine.h" />
+    <ClInclude Include="..\src\core\app.h" />
+    <ClInclude Include="..\src\core\frameui\controlframes.h" />
+    <ClInclude Include="..\src\core\frameui\dragdrop.h" />
+    <ClInclude Include="..\src\core\frameui\filetab.h" />
+    <ClInclude Include="..\src\core\frameui\fontsys.h" />
+    <ClInclude Include="..\src\core\frameui\frame.h" />
+    <ClInclude Include="..\src\core\frameui\framewnd.h" />
+    <ClInclude Include="..\src\core\frameui\listctrl.h" />
+    <ClInclude Include="..\src\core\frameui\window.h" />
+    <ClInclude Include="..\src\core\registry.h" />
+    <ClInclude Include="..\src\core\ui\aboutdlg.h" />
+    <ClInclude Include="..\src\core\ui\editor.h" />
+    <ClInclude Include="..\src\core\ui\luaeval.h" />
+    <ClInclude Include="..\src\core\ui\mainwnd.h" />
+    <ClInclude Include="..\src\core\ui\varlist.h" />
+    <ClInclude Include="..\src\ilua\stream.h" />
+    <ClInclude Include="..\src\ilua\ilua.h" />
+    <ClInclude Include="..\src\ilua\slowop.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="iLuaCore.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="blank.ico" />
+    <None Include="breakpoint.ico" />
+    <None Include="curline.ico" />
+    <None Include="hsplit.cur" />
+    <None Include="icon1.ico" />
+    <None Include="icon2.ico" />
+    <None Include="lualogo.bmp" />
+    <None Include="mainwnd.ico" />
+    <None Include="mainwndgreen.ico" />
+    <None Include="mainwndred.ico" />
+    <None Include="tminus.ico" />
+    <None Include="tplus.ico" />
+    <None Include="vsplit.cur" />
+    <None Include="xhover.ico" />
+    <None Include="xnormal.ico" />
+    <None Include="xpressed.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

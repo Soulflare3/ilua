@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DA401E4F-11EB-4527-9823-E227BD5201C4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>input</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\debug\</OutDir>
+    <IntDir>..\debug\obj\input\</IntDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\release\</OutDir>
+    <IntDir>..\release\obj\input\</IntDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>./;../src;../libs</AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)/dummy/%(RelativeDir)/</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../libs/lua/lua.lib;../libs/zlib/zlib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level2</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../src;../libs</AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)/dummy/%(RelativeDir)/</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../libs/lua/lua_r.lib;../libs/zlib/zlib_r.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\base\checksum.cpp" />
+    <ClCompile Include="..\src\base\dictionary.cpp" />
+    <ClCompile Include="..\src\base\error.cpp" />
+    <ClCompile Include="..\src\base\file.cpp" />
+    <ClCompile Include="..\src\base\gzmemory.cpp" />
+    <ClCompile Include="..\src\base\hashmap.cpp" />
+    <ClCompile Include="..\src\base\json.cpp" />
+    <ClCompile Include="..\src\base\thread.cpp" />
+    <ClCompile Include="..\src\base\pool.cpp" />
+    <ClCompile Include="..\src\base\regexp.cpp" />
+    <ClCompile Include="..\src\base\string.cpp" />
+    <ClCompile Include="..\src\base\timer.cpp" />
+    <ClCompile Include="..\src\base\tinyxml2.cpp" />
+    <ClCompile Include="..\src\base\utf8.cpp" />
+    <ClCompile Include="..\src\base\utils.cpp" />
+    <ClCompile Include="..\src\base\version.cpp" />
+    <ClCompile Include="..\src\base\wstring.cpp" />
+    <ClCompile Include="..\src\ilua\ilua.cpp" />
+    <ClCompile Include="..\src\ilua\slowop.cpp" />
+    <ClCompile Include="..\src\ilua\stream.cpp" />
+    <ClCompile Include="..\src\input\keylist.cpp" />
+    <ClCompile Include="..\src\input\list.cpp" />
+    <ClCompile Include="..\src\input\main.cpp" />
+    <ClCompile Include="..\src\input\module.cpp" />
+    <ClCompile Include="..\src\input\mouse.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\base\array.h" />
+    <ClInclude Include="..\src\base\checksum.h" />
+    <ClInclude Include="..\src\base\dictionary.h" />
+    <ClInclude Include="..\src\base\error.h" />
+    <ClInclude Include="..\src\base\file.h" />
+    <ClInclude Include="..\src\base\gzmemory.h" />
+    <ClInclude Include="..\src\base\hashmap.h" />
+    <ClInclude Include="..\src\base\json.h" />
+    <ClInclude Include="..\src\base\object.h" />
+    <ClInclude Include="..\src\base\optional.h" />
+    <ClInclude Include="..\src\base\pair.h" />
+    <ClInclude Include="..\src\base\point.h" />
+    <ClInclude Include="..\src\base\pool.h" />
+    <ClInclude Include="..\src\base\ptr.h" />
+    <ClInclude Include="..\src\base\regexp.h" />
+    <ClInclude Include="..\src\base\string.h" />
+    <ClInclude Include="..\src\base\thread.h" />
+    <ClInclude Include="..\src\base\timer.h" />
+    <ClInclude Include="..\src\base\tinyxml2.h" />
+    <ClInclude Include="..\src\base\types.h" />
+    <ClInclude Include="..\src\base\utf8.h" />
+    <ClInclude Include="..\src\base\utils.h" />
+    <ClInclude Include="..\src\base\version.h" />
+    <ClInclude Include="..\src\base\wstring.h" />
+    <ClInclude Include="..\src\ilua\ilua.h" />
+    <ClInclude Include="..\src\ilua\slowop.h" />
+    <ClInclude Include="..\src\ilua\stream.h" />
+    <ClInclude Include="..\src\input\keylist.h" />
+    <ClInclude Include="..\src\input\list.h" />
+    <ClInclude Include="..\src\input\module.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
