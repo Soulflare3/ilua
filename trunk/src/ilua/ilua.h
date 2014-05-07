@@ -55,7 +55,7 @@ inline int gettabsi(lua_State* L, int idx, char const* n)
 
 // equivalent to lua_call but ensures that the current thread does not yield
 void lcall(lua_State* L, int args, int ret);
-// lua_yield with a pass-through function that returns all its arguments
+// lua_callk with a pass-through continuation function (= call lua function and return whatever it returned)
 int ycall(lua_State* L, int args, int ret);
 
 // equivalent to luaL_checkoption but allows integers as well
@@ -80,7 +80,7 @@ bool __newtype(lua_State* L, char const* name, char const* parent);
 // declare a new type
 // use: newtype<Type>(L, "type", "base");
 // or: newtype<BasicType>(L);
-// pushes metatable AND __index table
+// pushes metatable AND __index table on the stack
 template<class T>
 void newtype(lua_State* L, char const* name = NULL, char const* parent = NULL)
 {

@@ -231,7 +231,7 @@ int Server::threadProc()
   {
     pause.wait(INFINITE);
     EnterCriticalSection(&lock);
-    mg_poll_server(server, 500);
+    mg_poll_server(server, 100);
     LeaveCriticalSection(&lock);
   }
   return 0;
