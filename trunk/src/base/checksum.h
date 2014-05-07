@@ -1,0 +1,38 @@
+#ifndef __BASE_CHECKSUM__
+#define __BASE_CHECKSUM__
+
+#include "base/types.h"
+#include "base/string.h"
+
+uint32 update_crc(uint32 crc, void const* vbuf, uint32 length);
+uint32 crc32(void const* buf, uint32 length);
+uint32 crc32(String str);
+
+class MD5
+{
+  uint8 buffer[64];
+  uint32 digest[4];
+  uint64 length;
+  uint32 bufSize;
+  void run();
+public:
+  enum {DIGEST_SIZE = 16};
+
+  MD5();
+  void process(void const* buf, uint32 size);
+  void finish(void* digest);
+
+  static String format(void const* digest);
+
+  static void checksum(void const* buf, uint32 size, void* digest)
+  {
+    MD5 md5;
+    md5.process(buf, size);
+    md5.finish(digest);
+  }
+};
+
+uint64 jenkins(void const* buf, uint32 length);
+uint32 hashlittle(void const* buf, uint32 length, uint32 initval);
+
+#endif // __BASE_CHECKSUM__

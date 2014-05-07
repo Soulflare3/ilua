@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{65cca782-516e-48f8-a7c8-6bcbd3ad42a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Header Files">
+      <UniqueIdentifier>{de850bc2-39be-46f9-8f4f-47aad0bfcb3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\Source Files">
+      <UniqueIdentifier>{9410bcb2-dcf2-44d8-99d9-faab95727460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua">
+      <UniqueIdentifier>{8e0013d3-aa79-474e-8160-d2af3036fa9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua\Header Files">
+      <UniqueIdentifier>{1b0e5f59-7535-4c34-aced-be0270cfe85e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ilua\Source Files">
+      <UniqueIdentifier>{a5792175-240c-442d-b67e-7b5671940b5a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\base\checksum.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\dictionary.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\error.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\file.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\gzmemory.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\hashmap.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\json.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\pool.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\regexp.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\string.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\timer.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\tinyxml2.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\utf8.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\utils.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\version.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\thread.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\base\wstring.cpp">
+      <Filter>base\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\ilua.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\slowop.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilua\stream.cpp">
+      <Filter>ilua\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\mongoose.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\base\array.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\checksum.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\dictionary.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\error.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\file.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\gzmemory.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\hashmap.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\json.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\object.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\optional.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\pair.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\point.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\pool.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\ptr.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\regexp.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\string.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\timer.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\tinyxml2.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\types.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\utf8.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\utils.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\version.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\thread.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base\wstring.h">
+      <Filter>base\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\ilua.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\slowop.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilua\stream.h">
+      <Filter>ilua\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\mongoose.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
