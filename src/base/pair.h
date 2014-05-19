@@ -21,9 +21,23 @@ struct Pair
 };
 template<class First, class Second>
 bool operator == (Pair<First, Second> const& a, Pair<First, Second> const& b)
-{
-  return a.first == b.first && a.second == b.second;
-}
+{return a.first == b.first && a.second == b.second;}
+template<class First, class Second>
+bool operator != (Pair<First, Second> const& a, Pair<First, Second> const& b)
+{return a.first != b.first || a.second != b.second;}
+template<class First, class Second>
+bool operator < (Pair<First, Second> const& a, Pair<First, Second> const& b)
+{return a.first < b.first || (a.first == b.first && a.second < b.second);}
+template<class First, class Second>
+bool operator <= (Pair<First, Second> const& a, Pair<First, Second> const& b)
+{return a.first < b.first || (a.first == b.first && a.second <= b.second);}
+template<class First, class Second>
+bool operator > (Pair<First, Second> const& a, Pair<First, Second> const& b)
+{return a.first > b.first || (a.first == b.first && a.second > b.second);}
+template<class First, class Second>
+bool operator >= (Pair<First, Second> const& a, Pair<First, Second> const& b)
+{return a.first > b.first || (a.first == b.first && a.second >= b.second);}
+
 template<class First, class Second>
 Pair<First, Second> MakePair(First const& first, Second const& second)
 {

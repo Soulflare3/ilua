@@ -738,7 +738,7 @@ static void push_buffer(lua_State* L, void const* data, size_t length)
 
 void bind_stream(lua_State* L)
 {
-  ilua::newtype<ilua::Stream>(L, "stream");
+  ilua::newtype<ilua::Stream>(L, "stream", "object");
   ilua::bindmethod(L, "read", stream_read);
   ilua::bindmethod(L, "write", stream_write);
   ilua::bindmethod(L, "seek", stream_seek);
@@ -779,6 +779,12 @@ void bind_stream(lua_State* L)
 
   ilua::openlib(L, "buffer");
   ilua::bindmethod(L, "create", buf_create);
+  lua_pop(L, 1);
+
+  ilua::openlib(L, "stream");
+  ilua::settabsi(L, "SEEK_SET", 0);
+  ilua::settabsi(L, "SEEK_CUR", 1);
+  ilua::settabsi(L, "SEEK_END", 2);
   lua_pop(L, 1);
 
   lua_pushlightuserdata(L, push_buffer);

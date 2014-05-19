@@ -16,6 +16,14 @@ public:
 };
 
 template<class T>
+int DefaultCompare(T const& a, T const& b)
+{
+  if (a < b) return -1;
+  if (b < a) return 1;
+  return 0;
+}
+
+template<class T>
 class Array : public ArrayBase
 {
   typedef int (*CompFunc) (T const& a, T const& b);
@@ -252,7 +260,7 @@ public:
     return *this;
   }
 
-  void sort(int (*comp) (T const& a, T const& b))
+  void sort(int (*comp) (T const& a, T const& b) = DefaultCompare<T>)
   {
     qsort_s(items, size(), sizeof(T), tlCompFunc, comp);
   }
@@ -489,7 +497,7 @@ public:
     return *this;
   }
 
-  void sort(int (*comp) (T const& a, T const& b))
+  void sort(int (*comp) (T const& a, T const& b) = DefaultCompare<T>)
   {
     qsort_s(items, size(), sizeof(T*), tlCompFunc, comp);
   }

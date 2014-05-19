@@ -13,14 +13,14 @@ void bind_sync(lua_State* L);
 void bind_utf8(lua_State* L);
 void bind_re(lua_State* L);
 void bind_stream(lua_State* L);
+void bind_co(lua_State* L);
 
 // Thread
 
 #define ILUA_TABLE_COUNTER      "ilua_threadcounter"
 
-Thread::Thread(int id, int _narg)
-  : narg(_narg)
-  , paused(0)
+Thread::Thread(int id, int narg)
+  : paused(0)
   , locked(0)
   , waketime(0)
   , next(NULL)
@@ -31,14 +31,17 @@ Thread::Thread(int id, int _narg)
   , epoch(0)
   , name("Worker thread")
   , tstatus(0)
+  , first(1)
 {
   addref();
 
   lua_State* cL = e->lock();
 
-  lua_pop(cL, 1);
+  lua_newtable(cL);
+  origL = L = lua_newthread(cL);
+  lua_rawseti(cL, -2, 0);
+  lua_setuservalue(cL, -2);
 
-  L = lua_newthread(cL);
   lua_pop(cL, 1);
 
   lua_xmove(cL, L, narg + 1);
@@ -78,29 +81,18 @@ void Thread::resume(Object* rc)
     ((Engine*) e)->enqueue(this);
 
   if (rc)
-  {
     ilua::pushobject(L, rc);
-    narg = 1;
-  }
-
-  e->unlock();
-}
-void Thread::resume(int args)
-{
-  e->lock();
-  if (--paused == 0 && ((Engine*) e)->suspended(this))
-    ((Engine*) e)->enqueue(this);
-
-  narg = args;
 
   e->unlock();
 }
 int Thread::run()
 {
-  int na = narg;
-  narg = 0;
+  int na = lua_gettop(L) - first;
+  if (L != origL)
+    lua_xmove(L, origL, na);
+  first = 0;
   locked = 0;
-  return lua_resume(L, NULL, na);
+  return lua_resume(origL, NULL, na);
 }
 
 Engine::Engine()
@@ -192,19 +184,22 @@ bool Engine::load_function(lua_State* cL, char const* path)
   }
   return false;
 }
-bool Engine::load(char const* path)
+ilua::Thread* Engine::load(char const* path)
 {
   bool wasRunning = running();
   if (!running())
     start();
   lua_State* cL = lock();
-  bool success = load_function(cL, path);
-  if (success)
-    create_thread(0)->name = String::getFileName(path);
+  Thread* result = NULL;
+  if (load_function(cL, path))
+  {
+    result = create_thread(0);
+    result->name = String::getFileName(path);
+  }
   else if (!wasRunning)
     finish();
   unlock();
-  return success;
+  return result;
 }
 
 lua_State* Engine::lock()
@@ -336,6 +331,7 @@ void Engine::start()
   bind_utf8(L);
   bind_re(L);
   bind_stream(L);
+  bind_co(L);
 
   lua_pushlightuserdata(L, this);
   lua_setfield(L, LUA_REGISTRYINDEX, "ilua_engine");
@@ -414,26 +410,45 @@ int Engine::core_thread()
         sethook(cur_thread->state());
         dbgDepth = -1;
         int result = cur_thread->run();
+        int nret = lua_gettop(cur_thread->state());
+        if (nret && result == LUA_YIELD)
+        {
+          uint32 magic = (uint32) lua_touserdata(cur_thread->state(), nret);
+          if (magic != CO_MAGIC)
+          {
+            lua_settop(cur_thread->state(), 0);
+            nret = 0;
+          }
+          else
+          {
+            result = LUA_ERRRUN;
+            lua_pushliteral(cur_thread->state(), "attempt to yield from outside a coroutine");
+          }
+        }
         if (result != LUA_YIELD)
         {
-          cur_thread->tstatus = 1;
           if (result != LUA_OK)
           {
+            cur_thread->tstatus = -1;
             lua_State* cL = cur_thread->state();
             logMessage(lua_tostring(cL, -1), LOG_ERROR);
             lua_Debug D;
+            memset(&D, 0, sizeof D);
             int stackPos = 0;
-            while (lua_getstack(cL, stackPos, &D) || stackPos > 100)
+            while (stackPos < 100 && lua_getstack(cL, stackPos, &D))
             {
               lua_getinfo(cL, "l", &D);
               if (D.currentline > 0)
                 break;
               stackPos++;
             }
-            lua_getinfo(cL, "Sl", &D);
-            if (bpHandler(DBG_ERROR, D.currentline - 1, D.source + 1, bpOpaque))
+            if (D.currentline > 0)
+              lua_getinfo(cL, "Sl", &D);
+            if (bpHandler(DBG_ERROR, D.currentline - 1, D.source ? D.source + 1 : NULL, bpOpaque))
               dbgBreak(cL, DBG_ERROR);
           }
+          else
+            cur_thread->tstatus = 1;
           if (cur_thread->tcounter)
           {
             add_counter(cur_thread->tcounter, cur_thread->epoch, 1);
@@ -599,7 +614,7 @@ bool Engine::suspended(Thread* t)
   return false;
 }
 
-bool Engine::load_module(char const* name)
+bool Engine::load_module(char const* name, char const* entry)
 {
   lock();
 
@@ -613,12 +628,18 @@ bool Engine::load_module(char const* name)
   HMODULE module = LoadLibrary(path);
   if (module)
   {
-    modules.set(name, module);
-  
     typedef void (*Binder)(lua_State*);
-    Binder bf = (Binder) GetProcAddress(module, "StartModule");
+    Binder bf = (Binder) GetProcAddress(module, entry ? entry : "StartModule");
     if (bf)
+    {
       bf(cur_state());
+      modules.set(name, module);  
+    }
+    else
+    {
+      FreeLibrary(module);
+      module = NULL;
+    }
   }
 
   unlock();

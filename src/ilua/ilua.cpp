@@ -33,24 +33,6 @@ void bindmethod(lua_State* L, char const* name, lua_CFunction func)
   lua_setfield(L, -2, name);
 }
 
-void setuservalue(lua_State* L, int pos)
-{
-  pos = lua_absindex(L, pos);
-  lua_getfield(L, LUA_REGISTRYINDEX, ILUA_TABLE_EXTRA);
-  lua_pushvalue(L, pos);
-  lua_pushvalue(L, -3);
-  lua_settable(L, -3);
-  lua_pop(L, 2);
-}
-void getuservalue(lua_State* L, int pos)
-{
-  pos = lua_absindex(L, pos);
-  lua_getfield(L, LUA_REGISTRYINDEX, ILUA_TABLE_EXTRA);
-  lua_pushvalue(L, pos);
-  lua_gettable(L, -2);
-  lua_remove(L, -2);
-}
-
 void lcall(lua_State* L, int args, int ret)
 {
   Thread* t = engine(L)->current_thread();
@@ -82,6 +64,37 @@ int checkoption(lua_State* L, int narg, const char* def, const char* const lst[]
       return value;
   }
   return luaL_checkoption(L, narg, def, lst);
+}
+
+static int nilfunc(lua_State* L)
+{
+  lua_pushnil(L);
+  return 1;
+}
+static int nilpairs(lua_State* L)
+{
+  lua_pushcfunction(L, nilfunc);
+  lua_pushnil(L);
+  lua_pushnil(L);
+  return 3;
+}
+static int pairsiter(lua_State* L)
+{
+  luaL_checktype(L, 1, LUA_TTABLE);
+  lua_settop(L, 2);
+  if (lua_next(L, 1))
+    return 2;
+  lua_pushnil(L);
+  return 1;
+}
+static int __pairs(lua_State* L)
+{
+  if (!lua_isuserdata(L, 1) || !lua_getmetatable(L, 1))
+    return 0;
+  lua_pushcfunction(L, pairsiter);
+  lua_getfield(L, -2, "__index");
+  lua_pushnil(L);
+  return 3;
 }
 
 int totable(lua_State* L, int pos)
@@ -129,6 +142,8 @@ int totable(lua_State* L, int pos)
   lua_setfield(L, -3, "__index");
   lua_setfield(L, -2, "__newindex");
   // stack = (VALUES) (NEWMETA)
+  lua_pushcfunction(L, __pairs);
+  lua_setfield(L, -2, "__pairs");
   lua_setmetatable(L, pos);
   return 1;
 }
@@ -167,6 +182,8 @@ bool __newtype(lua_State* L, char const* name, char const* parent)
 
     lua_pushcfunction(L, __newindex);
     lua_setfield(L, -2, "__newindex");
+    lua_pushcfunction(L, nilpairs);
+    lua_setfield(L, -2, "__pairs");
 
     lua_newtable(L);
     lua_pushvalue(L, -1);

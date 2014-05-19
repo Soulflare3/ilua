@@ -512,7 +512,7 @@ VarList::VarData* VarList::getNodeByPos(int ypos, int* depth)
   VarData* node = &root;
   while (ypos != 0 || node->parent == NULL)
   {
-    if (!(node->flags & VarData::fExpanded))
+    if (!(node->flags & VarData::fExpanded) || node->children.length() == 0)
       return NULL;
     if (node->parent != NULL)
       ypos--;

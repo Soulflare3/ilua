@@ -13,6 +13,7 @@ static int input_hook(lua_State* L)
 {
   if (!lua_isnil(L, 1))
     luaL_argcheck(L, lua_isfunction(L, 1), 1, "function expected");
+  ilua::engine(L)->keepalive();
   InputModule* m = InputModule::get(L);
   lua_pushvalue(L, 1);
   int ref = (lua_isnil(L, 1) ? 0 : luaL_ref(L, LUA_REGISTRYINDEX));
@@ -21,6 +22,7 @@ static int input_hook(lua_State* L)
 }
 static int input_bind(lua_State* L)
 {
+  ilua::engine(L)->keepalive();
   InputModule* m = InputModule::get(L);
 
   int limit = luaL_optinteger(L, 3, 0);
@@ -93,6 +95,7 @@ static int key_name(lua_State* L)
 }
 static int input_ontext(lua_State* L)
 {
+  ilua::engine(L)->keepalive();
   char const* str = luaL_checkstring(L, 1);
   luaL_argcheck(L, lua_isfunction(L, 2), 2, "function expected");
   InputModule* m = InputModule::get(L);
@@ -102,6 +105,7 @@ static int input_ontext(lua_State* L)
 }
 static int input_onsequence(lua_State* L)
 {
+  ilua::engine(L)->keepalive();
   char const* str = luaL_checkstring(L, 1);
   luaL_argcheck(L, lua_isfunction(L, 2), 2, "function expected");
   InputModule* m = InputModule::get(L);
@@ -109,19 +113,30 @@ static int input_onsequence(lua_State* L)
   m->addsequence(str, false, luaL_ref(L, LUA_REGISTRYINDEX));
   return 0;
 }
-static int input_pressed(lua_State* L)
+static int input_down(lua_State* L)
 {
+  InputModule* m = InputModule::get(L);
   int key;
   if (lua_type(L, 1) == LUA_TNUMBER)
     key = (lua_tointeger(L, 1) & 0xFF);
   else if (lua_type(L, 1) == LUA_TSTRING)
-  {
-    InputModule* m = InputModule::get(L);
     key = m->nametokey(lua_tostring(L, 1));
-  }
   else
     luaL_argerror(L, 1, "string or integer expected");
-  lua_pushboolean(L, (key != 0) && (GetAsyncKeyState(key) & 0x8000));
+  lua_pushboolean(L, key >= 0 && key <= 255 && (m->keyTable[key] & 0x80));
+  return 1;
+}
+static int input_up(lua_State* L)
+{
+  InputModule* m = InputModule::get(L);
+  int key;
+  if (lua_type(L, 1) == LUA_TNUMBER)
+    key = (lua_tointeger(L, 1) & 0xFF);
+  else if (lua_type(L, 1) == LUA_TSTRING)
+    key = m->nametokey(lua_tostring(L, 1));
+  else
+    luaL_argerror(L, 1, "string or integer expected");
+  lua_pushboolean(L, key < 0 || key > 255 || !(m->keyTable[key] & 0x80));
   return 1;
 }
 
@@ -286,39 +301,65 @@ static int input_newlist(lua_State* L)
 }
 static int input_waitup(lua_State* L)
 {
+  InputModule* m = InputModule::get(L);
   int key;
   if (lua_type(L, 1) == LUA_TNUMBER)
     key = (lua_tointeger(L, 1) & 0xFF);
   else if (lua_type(L, 1) == LUA_TSTRING)
   {
-    InputModule* m = InputModule::get(L);
     key = m->nametokey(lua_tostring(L, 1));
     lua_pushinteger(L, key);
     lua_replace(L, 1);
   }
   else
     luaL_argerror(L, 1, "string or integer expected");
-  if (GetAsyncKeyState(key) & 0x8000)
-    return ilua::engine(L)->current_thread()->yield(input_waitup);
-  return 0;
+  uint32 waitEnd = 0xFFFFFFFF;
+  if (lua_getctx(L, (int*) &waitEnd) != LUA_YIELD)
+  {
+    double duration = luaL_optnumber(L, 2, -1);
+    if (duration > 0)
+      waitEnd = GetTickCount() + int(duration * 1000.0);
+  }
+  if (waitEnd != 0xFFFFFFFF && GetTickCount() > waitEnd)
+  {
+    lua_pushboolean(L, 0);
+    return 1;
+  }
+  if (m->keyTable[key] & 0x80)
+    return ilua::engine(L)->current_thread()->yield(input_waitup, waitEnd);
+  lua_pushboolean(L, 1);
+  return 1;
 }
 static int input_waitdown(lua_State* L)
 {
+  InputModule* m = InputModule::get(L);
   int key;
   if (lua_type(L, 1) == LUA_TNUMBER)
     key = (lua_tointeger(L, 1) & 0xFF);
   else if (lua_type(L, 1) == LUA_TSTRING)
   {
-    InputModule* m = InputModule::get(L);
     key = m->nametokey(lua_tostring(L, 1));
     lua_pushinteger(L, key);
     lua_replace(L, 1);
   }
   else
     luaL_argerror(L, 1, "string or integer expected");
-  if (!(GetAsyncKeyState(key) & 0x8000))
-    return ilua::engine(L)->current_thread()->yield(input_waitup);
-  return 0;
+  uint32 waitEnd = 0xFFFFFFFF;
+  if (lua_getctx(L, (int*) &waitEnd) != LUA_YIELD)
+  {
+    double duration = luaL_optnumber(L, 2, -1);
+    if (duration > 0)
+      waitEnd = GetTickCount() + int(duration * 1000.0);
+  }
+  if (waitEnd != 0xFFFFFFFF && GetTickCount() > waitEnd)
+  {
+    lua_pushboolean(L, 0);
+    return 1;
+  }
+  if (!(m->keyTable[key] & 0x80))
+    return ilua::engine(L)->current_thread()->yield(input_waitdown, waitEnd);
+  lua_pushboolean(L, 1);
+  return 1;
 }
 
 extern "C" __declspec(dllexport) void StartModule(lua_State* L)
@@ -354,7 +395,8 @@ extern "C" __declspec(dllexport) void StartModule(lua_State* L)
   ilua::openlib(L, "key");
   lua_newtable(L);
   lua_newtable(L);
-  ilua::bindmethod(L, "pressed", input_pressed);
+  ilua::bindmethod(L, "down", input_down);
+  ilua::bindmethod(L, "up", input_up);
   ilua::bindmethod(L, "waitup", input_waitup);
   ilua::bindmethod(L, "waitdown", input_waitdown);
   ilua::bindmethod(L, "name", key_name);
@@ -377,7 +419,8 @@ extern "C" __declspec(dllexport) void StartModule(lua_State* L)
   ilua::openlib(L, "mouse");
   lua_newtable(L);
   lua_newtable(L);
-  ilua::bindmethod(L, "pressed", input_pressed);
+  ilua::bindmethod(L, "down", input_down);
+  ilua::bindmethod(L, "up", input_up);
   bind_mouse(L);
   lua_setfield(L, -2, "__index");
   lua_setmetatable(L, -2);

@@ -12,7 +12,14 @@ void Editor::onKey(uint32 wParam)
       else
       {
         POINT pt = toPoint(caret);
-        pt.x = 0;
+        wchar_t const* text = lines[pt.y].text.c_str();
+        int first = 0;
+        while (text[first] && iswspace(text[first]))
+          first++;
+        if (pt.x == first)
+          pt.x = 0;
+        else
+          pt.x = first;
         caret = fromPoint(pt);
       }
       if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000))
@@ -142,10 +149,12 @@ void Editor::onKey(uint32 wParam)
     {
       POINT pt = toPoint(caret);
       pt.y--;
+      pt.x = caretX;
       caret = fromPoint(pt);
       if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000))
         selStart = caret;
       updateCaret();
+      caretX = pt.x;
     }
     break;
   case VK_DOWN:
@@ -155,10 +164,12 @@ void Editor::onKey(uint32 wParam)
     {
       POINT pt = toPoint(caret);
       pt.y++;
+      pt.x = caretX;
       caret = fromPoint(pt);
       if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000))
         selStart = caret;
       updateCaret();
+      caretX = pt.x;
     }
     break;
   case VK_PRIOR:
@@ -215,6 +226,39 @@ void Editor::onKey(uint32 wParam)
   case VK_INSERT:
     insertMode = !insertMode;
     placeCaret();
+    break;
+  case VK_OEM_4:
+  case VK_OEM_6:
+    if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+    {
+      int index = -1;
+      for (int i = 0; i < focus.length(); i++)
+        if (caret >= focus[i].first && caret <= focus[i].first + focus[i].second)
+          index = i;
+      if (index >= 0)
+      {
+        if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+        {
+          if (wParam == VK_OEM_6)
+          {
+            selStart = focus[0].first;
+            caret = focus.top().first + focus.top().second;
+          }
+          else
+          {
+            caret = focus[0].first;
+            selStart = focus.top().first + focus.top().second;
+          }
+        }
+        else
+        {
+          index = (index + (wParam == VK_OEM_6 ? 1 : -1)) % focus.length();
+          if (index < 0) index += focus.length();
+          caret = selStart = focus[index].first;
+        }
+        updateCaret();
+      }
+    }
     break;
   }
 }

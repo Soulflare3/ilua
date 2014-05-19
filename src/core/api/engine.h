@@ -44,6 +44,8 @@ struct LoadedInfo
   Array<int> validLines;
 };
 
+#define CO_MAGIC          0x1C2C3C4C
+
 namespace api
 {
 
@@ -54,7 +56,8 @@ class Engine;
 class Thread : public ilua::Thread
 {
   lua_State* L;
-  int narg;
+  lua_State* origL;
+  int first;
   int paused;
   int tid;
   void* dataptr;
@@ -68,12 +71,15 @@ public:
   int yield(lua_CFunction cont = NULL, int ctx = 0);
   int sleep(int time, lua_CFunction cont = NULL, int ctx = 0);
   void resume(Object* rc = NULL);
-  void resume(int args);
   void terminate();
 
   lua_State* state()
   {
     return L;
+  }
+  void setco(lua_State* S)
+  {
+    L = S;
   }
   int run();
 
@@ -176,8 +182,8 @@ public:
   ~Engine();
 
   bool load_function(lua_State* cL, char const* file);
-  bool load(char const* file);
-  bool load_module(char const* name);
+  ilua::Thread* load(char const* file);
+  bool load_module(char const* name, char const* entry = NULL);
 
   lua_State* lock();
   void unlock();

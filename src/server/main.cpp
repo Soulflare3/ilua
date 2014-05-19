@@ -4,8 +4,6 @@
 #include "base/thread.h"
 #include "mongoose.h"
 
-#define ILUA_CONREF         "ilua_server_conref"
-
 class Server : public ilua::Object
 {
   static int mgHandler(mg_connection* con, mg_event ev);
@@ -85,10 +83,7 @@ Connection::Connection(lua_State* L, mg_connection* c)
   , e(ilua::engine(L))
   , written(false)
 {
-  lua_getfield(L, LUA_REGISTRYINDEX, ILUA_CONREF);
-  lua_pushvalue(L, -2);
-  lua_rawsetp(L, -2, this);
-  lua_pop(L, 1);
+  addref();
   con->connection_param = this;
   if (ilua::totable(L, -1))
   {
@@ -128,14 +123,7 @@ int Connection::onEvent(mg_event ev)
     }
     return MG_TRUE;
   case MG_CLOSE:
-    {
-      lua_State* L = e->lock();
-      lua_getfield(L, LUA_REGISTRYINDEX, ILUA_CONREF);
-      lua_pushnil(L);
-      lua_rawsetp(L, -2, this);
-      lua_pop(L, 1);
-      e->unlock();
-    }
+    release();
   }
   return MG_FALSE;
 }
@@ -411,9 +399,6 @@ static int server_redirect(lua_State* L)
 
 extern "C" __declspec(dllexport) void StartModule(lua_State* L)
 {
-  lua_newtable(L);
-  lua_setfield(L, LUA_REGISTRYINDEX, ILUA_CONREF);
-
   ilua::newtype<Server>(L, "server", "object");
   ilua::bindmethod(L, "shutdown", server_shutdown);
   ilua::bindmethod(L, "option", server_option);

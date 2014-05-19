@@ -347,10 +347,20 @@ static int mouse_bezier(lua_State* L)
   return 0;
 }
 
+static int mouse_pos(lua_State* L)
+{
+  POINT pt;
+  GetCursorPos(&pt);
+  lua_pushinteger(L, pt.x);
+  lua_pushinteger(L, pt.y);
+  return 2;
+}
+
 void bind_mouse(lua_State* L)
 {
   ilua::bindmethod(L, "move", mouse_move);
   ilua::bindmethod(L, "click", mouse_click);
   ilua::bindmethod(L, "drag", mouse_drag);
   ilua::bindmethod(L, "bezier", mouse_bezier);
+  ilua::bindmethod(L, "pos", mouse_pos);
 }

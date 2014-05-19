@@ -92,6 +92,7 @@ HFONT FontSys::_getFont(int height, WideString face, int flags)
   lf.lfItalic = (flags & FONT_ITALIC ? TRUE : FALSE);
   lf.lfUnderline = (flags & FONT_UNDERLINE ? TRUE : FALSE);
   lf.lfStrikeOut = (flags & FONT_STRIKEOUT ? TRUE : FALSE);
+  lf.lfQuality = CLEARTYPE_QUALITY;
   fonts[left]->font = CreateFontIndirect(&lf);
   return fonts[left]->font;
 }

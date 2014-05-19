@@ -17,8 +17,9 @@ struct Editor::Painter
 
   bool inFocus(int pos)
   {
+    if (e->caret != e->selStart) return false;
     for (int i = 0; i < e->focus.length(); i++)
-      if (pos + origin == e->focus[i])
+      if (pos + origin == e->focus[i].first)
         return true;
     return false;
   }

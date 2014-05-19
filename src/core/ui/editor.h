@@ -95,7 +95,8 @@ class Editor : public WindowFrame
   };
   Array<Line> lines;
 
-  Array<int> focus;
+  typedef Pair<int, int> FocusWord;
+  Array<FocusWord> focus;
 
   IDataObject* pCopyLine;
 
@@ -119,6 +120,7 @@ class Editor : public WindowFrame
   void paint();
   void initkw();
 
+  int caretX;
   int caret;
   int selStart;
   POINT scrollPos;

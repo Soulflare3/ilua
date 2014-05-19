@@ -84,7 +84,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>../libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;comctl32.lib;../libs/lua/lua_r.lib;../libs/zlib/zlib_r.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../libs/pcre/pcre_r.lib;winmm.lib;comctl32.lib;../libs/lua/lua_r.lib;../libs/zlib/zlib_r.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -108,6 +108,7 @@
     <ClCompile Include="..\src\base\version.cpp" />
     <ClCompile Include="..\src\base\wstring.cpp" />
     <ClCompile Include="..\src\core\api\binds.cpp" />
+    <ClCompile Include="..\src\core\api\corolib.cpp" />
     <ClCompile Include="..\src\core\api\stream.cpp" />
     <ClCompile Include="..\src\core\api\engine.cpp" />
     <ClCompile Include="..\src\core\api\regexp.cpp" />

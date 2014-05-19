@@ -7,6 +7,14 @@ struct SyncSection
 {
   int count;
   ilua::Thread* owner;
+  SyncSection()
+    : owner(NULL)
+  {}
+  ~SyncSection()
+  {
+    if (owner)
+      owner->release();
+  }
 };
 struct SyncEvent
 {
@@ -61,10 +69,17 @@ static int sync_wait(lua_State* L)
 static int section_enter(lua_State* L)
 {
   SyncSection* t = ilua::checkobject<SyncSection>(L, 1, "sync.section");
+  if (t->owner && t->owner->status())
+  {
+    t->owner->release();
+    t->owner = NULL;
+    t->count = 0;
+  }
   ilua::Thread* cur = engine(L)->current_thread();
   if (t->count > 0 && t->owner != cur)
     return cur->yield(section_enter);
   t->owner = cur;
+  t->owner->addref();
   t->count++;
   return 0;
 }
@@ -74,6 +89,11 @@ static int section_leave(lua_State* L)
   ilua::Thread* cur = engine(L)->current_thread();
   if (t->count > 0 && t->owner == cur)
     t->count--;
+  if (t->count == 0 && t->owner)
+  {
+    t->owner->release();
+    t->owner = NULL;
+  }
   return 0;
 }
 

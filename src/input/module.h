@@ -32,6 +32,8 @@ public:
   InputModule();
   ~InputModule();
 
+  uint8 keyTable[256];
+
   uint32 thread_id();
   static InputModule* get(lua_State* L);
 
