@@ -632,8 +632,8 @@ bool Engine::load_module(char const* name, char const* entry)
     Binder bf = (Binder) GetProcAddress(module, entry ? entry : "StartModule");
     if (bf)
     {
-      bf(cur_state());
       modules.set(name, module);  
+      bf(cur_state());
     }
     else
     {
