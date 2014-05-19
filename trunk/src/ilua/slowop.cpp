@@ -32,12 +32,12 @@ lua_State* SlowOperation::output_begin()
   e->lock();
   return t->state();
 }
-void SlowOperation::output_end(int args)
+void SlowOperation::output_end()
 {
   resumed = true;
   if (t)
   {
-    t->resume(args);
+    t->resume();
     t->release();
   }
   t = NULL;
@@ -53,13 +53,8 @@ SlowOperation::~SlowOperation()
   if (t)
     t->release();
 }
-void SlowOperation::start(lua_State* L)
+int SlowOperation::start(lua_State* L)
 {
-  *(SlowOperation**) lua_newuserdata(L, sizeof(SlowOperation*)) = this;
-  lua_newtable(L);
-  lua_pushcfunction(L, slowop_gc);
-  lua_setfield(L, -2, "__gc");
-  lua_setmetatable(L, -2);
   e = engine(L);
   t = e->current_thread();
   if (t)
@@ -69,6 +64,16 @@ void SlowOperation::start(lua_State* L)
   }
   resumed = false;
   hThread = CreateThread(NULL, 0, thread_proc, this, 0, NULL);
+  return lua_yield(L, 0);
+}
+void* SlowOperation::operator new(size_t sz, lua_State* L)
+{
+  void* ptr = lua_newuserdata(L, sz);
+  lua_newtable(L);
+  lua_pushcfunction(L, slowop_gc);
+  lua_setfield(L, -2, "__gc");
+  lua_setmetatable(L, -2);
+  return ptr;
 }
 
 }

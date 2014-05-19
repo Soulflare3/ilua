@@ -11,6 +11,7 @@
 #define ILUA_TABLE_XREF   "ilua_xref"
 #define ILUA_TABLE_EXTRA  "ilua_xtra"
 
+// no idea why it doesn't exist in the original lauxlib
 void luaL_printf(luaL_Buffer *B, const char *fmt, ...);
 
 namespace ilua
@@ -23,11 +24,6 @@ void openlib(lua_State* L, char const* name);
 // bind function to a table on top of the stack
 // equivalent to lua_pushcfunction(L, func); lua_setfield(L, -2, name);
 void bindmethod(lua_State* L, char const* name, lua_CFunction func);
-
-// assign the value on top of the stack as uservalue for an object at index `pos', and pop it
-void setuservalue(lua_State* L, int pos);
-// push uservalue of an object at index `pos'
-void getuservalue(lua_State* L, int pos);
 
 // self-explanatory shortcuts
 inline void settabss(lua_State* L, char const* n, char const* s)
@@ -54,6 +50,7 @@ inline int gettabsi(lua_State* L, int idx, char const* n)
 }
 
 // equivalent to lua_call but ensures that the current thread does not yield
+// not recommended; only use if the function is *supposed* to be a c-function
 void lcall(lua_State* L, int args, int ret);
 // lua_callk with a pass-through continuation function (= call lua function and return whatever it returned)
 int ycall(lua_State* L, int args, int ret);
@@ -250,9 +247,8 @@ public:
   virtual int yield(lua_CFunction cont = NULL, int ctx = 0) = 0;
   // same as yield but waits for specified number of milliseconds
   virtual int sleep(int time, lua_CFunction cont = NULL, int ctx = 0) = 0;
-  // resume suspended thread, passing specified number of args or an object to continuation function
+  // resume suspended thread, optionally passing an object to continuation function in addition to arguments already on the stack
   virtual void resume(Object* rc = NULL) = 0;
-  virtual void resume(int args) = 0;
 
   // stop thread execution (does not stop current execution, use lua_yield afterwards)
   virtual void terminate() = 0;
@@ -264,7 +260,7 @@ public:
   // thread id
   virtual int id() const = 0;
 
-  // 1 if finished
+  // 0 if still running, 1 if finished, -1 on error
   virtual int status() const = 0;
 
   // create/get an opaque block of data associated with the thread
@@ -276,9 +272,9 @@ class Engine
 {
 public:
   // load a file and execute it as a new thread
-  virtual bool load(char const* file) = 0;
+  virtual ilua::Thread* load(char const* file) = 0;
   // load a DLL module
-  virtual bool load_module(char const* name) = 0;
+  virtual bool load_module(char const* name, char const* entry = NULL) = 0;
 
   // pause the engine to allow modifying the state
   // returns the state of the currently executing thread, or global state

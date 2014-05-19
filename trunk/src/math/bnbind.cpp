@@ -111,12 +111,29 @@ static int bn_mod(lua_State* L)
   bn::mod(bn_create(L), a, b);
   return 1;
 }
+class BnPow : public ilua::SlowOperation
+{
+  bn::Number* m_a;
+  bn::Number* m_b;
+public:
+  BnPow(bn::Number* a, bn::Number* b) : m_a(a), m_b(b) {}
+  void run()
+  {
+    bn::Number temp;
+    bn::pow(&temp, m_a, m_b);
+    lua_State* L = output_begin();
+    bn::Number* r = bn_create(L);
+    memcpy(r, &temp, sizeof temp);
+    temp.m = NULL;
+    output_end();
+  }
+};
+
 static int bn_pow(lua_State* L)
 {
   bn::Number* a = bn_get(L, 1);
   bn::Number* b = bn_get(L, 2);
-  bn::pow(bn_create(L), a, b);
-  return 1;
+  return (new(L) BnPow(a, b))->start(L);
 }
 static int bn_shift(lua_State* L)
 {
@@ -342,7 +359,7 @@ public:
     int isprime = bn::isprime(num, nchecks);
     lua_State* L = output_begin();
     lua_pushboolean(L, isprime);
-    output_end(1);
+    output_end();
   }
 };
 
@@ -350,9 +367,7 @@ static int bn_isprime(lua_State* L)
 {
   bn::Number* a = bn_get(L, 1);
   int checks = luaL_optinteger(L, 2, 0);
-  BnIsPrime* op = new BnIsPrime(a, checks);
-  op->start(L);
-  return lua_yield(L, 0);
+  return (new(L) BnIsPrime(a, checks))->start(L);
 }
 
 class BnRandPrime : public ilua::SlowOperation
@@ -371,7 +386,7 @@ public:
     bn::Number* r = bn_create(L);
     memcpy(r, &temp, sizeof temp);
     temp.m = NULL;
-    output_end(1);
+    output_end();
   }
 };
 
@@ -383,9 +398,7 @@ static int bn_randprime(lua_State* L)
   if (lua_type(L, index) == LUA_TNUMBER)
     bits = lua_tointeger(L, index++);
   random_optextra(rand, L, index);
-  BnRandPrime* op = new BnRandPrime(rand, bits);
-  op->start(L);
-  return lua_yield(L, 0);
+  return (new(L) BnRandPrime(rand, bits))->start(L);
 }
 
 static void bindfuncs(lua_State* L)

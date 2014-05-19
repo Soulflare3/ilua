@@ -35,7 +35,7 @@ public:
 
     lua_State* L = output_begin();
     lua_pushboolean(L, result == 0);
-    output_end(1);
+    output_end();
   }
 };
 
@@ -62,7 +62,7 @@ static int file_open(lua_State* L)
     }
   }
   DWORD creation[4] = {OPEN_EXISTING, OPEN_EXISTING, CREATE_ALWAYS, OPEN_ALWAYS};
-  HANDLE hFile = CreateFile(WideString(path), GENERIC_READ | (mask & 2 ? GENERIC_WRITE : 0), FILE_SHARE_READ, NULL,
+  HANDLE hFile = CreateFile(WideString(path), GENERIC_READ | (mask ? GENERIC_WRITE : 0), FILE_SHARE_READ, NULL,
     creation[mask & 3], FILE_ATTRIBUTE_NORMAL, NULL);
   if (hFile != INVALID_HANDLE_VALUE)
     new(L, "file") SystemFile(hFile, mask & 4 ? SystemFile::OPEN_APPEND : (mask & 2 ? SystemFile::OPEN_WRITE : SystemFile::OPEN_READ));
@@ -102,9 +102,7 @@ static int file_copy(lua_State* L)
   WideString dst = WideString::getFullPathName(WideString(arg2));
   src.append(L"\0", 1);
   dst.append(L"\0", 1);
-  FileOp* op = new FileOp(FileOp::fCopy, src, dst);
-  op->start(L);
-  return lua_yield(L, 0);
+  return (new(L) FileOp(FileOp::fCopy, src, dst))->start(L);
 }
 
 struct FindData
@@ -201,11 +199,7 @@ static int file_treefunc(lua_State* L)
     }
   }
   if (cd->func)
-  {
-    FileOp* op = new FileOp(cd->func, cd->from, cd->to);
-    op->start(L);
-    return lua_yield(L, 0);
-  }
+    return (new(L) FileOp(cd->func, cd->from, cd->to))->start(L);
   else
     return 0;
 }
@@ -242,9 +236,7 @@ static int os_rmtree(lua_State* L)
   WideString path = WideString::getFullPathName(WideString(arg1));
   path.append(L"\0", 1);
 
-  FileOp* op = new FileOp(FileOp::fDelete, path, WideString(L"\0", 1));
-  op->start(L);
-  return lua_yield(L, 0);
+  return (new(L) FileOp(FileOp::fDelete, path, WideString(L"\0", 1)))->start(L);
 }
 static int file_move(lua_State* L)
 {
@@ -254,9 +246,7 @@ static int file_move(lua_State* L)
   WideString dst = WideString::getFullPathName(WideString(arg2));
   src.append(L"\0", 1);
   dst.append(L"\0", 1);
-  FileOp* op = new FileOp(FileOp::fMove, src, dst);
-  op->start(L);
-  return lua_yield(L, 0);
+  return (new(L) FileOp(FileOp::fMove, src, dst))->start(L);
 }
 static int file_remove(lua_State* L)
 {
@@ -611,10 +601,6 @@ void fileutil_bind(lua_State* L)
   ilua::settabsi(L, "OFFLINE", FILE_ATTRIBUTE_OFFLINE);
   ilua::settabsi(L, "NOT_INDEXED", FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
   ilua::settabsi(L, "ENCRYPTED", FILE_ATTRIBUTE_ENCRYPTED);
-
-  ilua::settabsi(L, "SEEK_SET", 0);
-  ilua::settabsi(L, "SEEK_CUR", 1);
-  ilua::settabsi(L, "SEEK_END", 2);
 
   lua_pop(L, 1);
 

@@ -327,26 +327,67 @@ static int string_concat(lua_State* L)
   luaL_pushresult(&b);
   return 1;
 }
+static int string_hex(lua_State* L)
+{
+  static char hexl[] = "0123456789abcdef";
+  static char hexu[] = "0123456789ABCDEF";
+  size_t length;
+  char const* str = luaL_checklstring(L, 1, &length);
+  char const* conv = (lua_toboolean(L, 2) ? hexu : hexl);
+  luaL_Buffer b;
+  luaL_buffinit(L, &b);
+  for (size_t i = 0; i < length; i++)
+  {
+    luaL_addchar(&b, conv[(str[i] >> 4) & 0xF]);
+    luaL_addchar(&b, conv[str[i] & 0xF]);
+  }
+  luaL_pushresult(&b);
+  return 1;
+}
+static int string_pad(lua_State* L)
+{
+  size_t length;
+  char const* str = luaL_checklstring(L, 1, &length);
+  int padto = luaL_checkinteger(L, 2);
+
+  if (length == padto)
+    lua_pushvalue(L, 1);
+  else if (length > padto)
+    lua_pushlstring(L, str, padto);
+  else
+  {
+    luaL_Buffer b;
+    luaL_buffinit(L, &b);
+    luaL_addlstring(&b, str, length);
+    char* ptr = luaL_prepbuffsize(&b, padto - length);
+    memset(ptr, 0, padto - length);
+    luaL_addsize(&b, padto - length);
+    luaL_pushresult(&b);
+  }
+  return 1;
+}
 
 void bind_utf8(lua_State* L)
 {
   ilua::openlib(L, "utf8");
-  ilua::bindmethod(L, "valid", utf8_valid);
   ilua::bindmethod(L, "byte", utf8_byte);
   ilua::bindmethod(L, "char", utf8_char);
+  ilua::bindmethod(L, "fromoffset", utf8_fromoffset);
   ilua::bindmethod(L, "len", utf8_len);
   ilua::bindmethod(L, "lower", utf8_lower);
-  ilua::bindmethod(L, "upper", utf8_upper);
-  ilua::bindmethod(L, "reverse", utf8_reverse);
   ilua::bindmethod(L, "offset", utf8_offset);
-  ilua::bindmethod(L, "fromoffset", utf8_fromoffset);
+  ilua::bindmethod(L, "reverse", utf8_reverse);
   ilua::bindmethod(L, "sub", utf8_sub);
   ilua::bindmethod(L, "unpack", utf8_unpack);
+  ilua::bindmethod(L, "upper", utf8_upper);
+  ilua::bindmethod(L, "valid", utf8_valid);
   lua_pop(L, 1);
 
   ilua::openlib(L, "string");
   ilua::bindmethod(L, "unpack", string_unpack);
   ilua::bindmethod(L, "concat", string_concat);
+  ilua::bindmethod(L, "hex", string_hex);
+  ilua::bindmethod(L, "pad", string_pad);
   lua_pop(L, 1);
 }
 

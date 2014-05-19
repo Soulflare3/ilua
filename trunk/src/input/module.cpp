@@ -27,6 +27,7 @@ InputModule::InputModule()
   , threadReady(false)
   , keymap(DictionaryMap::asciiNoCase)
 {
+  GetKeyboardState(keyTable);
   memset(binds, 0, sizeof binds);
   for (uint32 i = 0; i < 256; i++)
     if (keynames[i])
@@ -86,6 +87,10 @@ LRESULT CALLBACK InputModule::keybd_proc(int nCode, WPARAM wParam, LPARAM lParam
   int code = 0;
   if ((kbd->flags & LLKHF_INJECTED) == 0)
   {
+    if (wParam == WM_KEYUP)
+      m->keyTable[kbd->vkCode] = 0x00;
+    else
+      m->keyTable[kbd->vkCode] = 0x80;
     if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP)
       code = (kbd->vkCode | InputList::curmod() | mUP);
     else if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
@@ -203,7 +208,6 @@ int InputModule::thread_proc()
     {
     case IM_ADDHOTKEY:
       {
-        e->keepalive();
         int id = (msg.lParam & 0x1FFF);
         int limit = ((msg.lParam >> 16) & 0xFFFF);
         if (limit == 0) limit = 0xFFFF;
@@ -218,7 +222,6 @@ int InputModule::thread_proc()
     case IM_SETHOOK:
       if (hookfunc)
       {
-        e->keepalive();
         lua_State* L = e->lock();
         luaL_unref(L, LUA_REGISTRYINDEX, hookfunc);
         e->unlock();
@@ -355,7 +358,6 @@ int InputModule::thread_proc()
       }
       break;
     case IM_ADDSEQ:
-      e->keepalive();
       sequences.push((Sequence*) msg.wParam);
       break;
     case IM_ADDRECORD:

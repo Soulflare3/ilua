@@ -171,7 +171,7 @@ static int re_dosearch(lua_State* L, ReProg* prog, int pos, int flags)
   }
   for (int i = rc; i <= prog->captures; i++)
     ovector[i + i] = ovector[i + i + 1] = -1;
-  new(L, "re.matchinfo") ReMatch(L, prog, length, text, ovector, pos);
+  new(L, "re.match") ReMatch(L, prog, length, text, ovector, pos);
   return 1;
 }
 static int re_search(lua_State* L)
@@ -271,7 +271,7 @@ static int rep_findall(lua_State* L)
 
 static int re_finditercb(lua_State* L)
 {
-  ReMatch* rm = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* rm = ilua::checkobject<ReMatch>(L, 1, "re.match");
   int pos = (rm->ovector[1] >= 0 ? rm->ovector[1] + (rm->ovector[0] == rm->ovector[1]) : rm->pos);
   int rc = pcre_exec(rm->prog->prog, NULL, rm->text, rm->length, pos, 0, rm->ovector, (rm->prog->captures + 1) * 3);
   if (rc < 0 || rm->ovector[1] < 0)
@@ -307,7 +307,7 @@ static int re_dofinditer(lua_State* L, ReProg* prog, int pos, int flags)
   for (int i = 0; i < ovecsize; i++)
     ovector[i] = -1;
   lua_pushcfunction(L, re_finditercb);
-  new(L, "re.matchinfo") ReMatch(L, prog, length, text, ovector, pos);
+  new(L, "re.match") ReMatch(L, prog, length, text, ovector, pos);
   lua_pushnil(L);
   return 3;
 }
@@ -487,7 +487,7 @@ static int re_sub(lua_State* L)
   int* ovector = new int[ovecsize];
   for (int i = 0; i < ovecsize; i++)
     ovector[i] = -1;
-  new(L, "re.matchinfo") ReMatch(L, prog, length, text, ovector, 0);
+  new(L, "re.match") ReMatch(L, prog, length, text, ovector, 0);
   ReSub* rs = (ReSub*) lua_newuserdata(L, sizeof(ReSub));
   rs->match = lua_gettop(L) - 1;
   rs->maxcount = maxcount;
@@ -550,7 +550,7 @@ static int re_expand(lua_State* L)
 {
   size_t length;
   char const* repl = luaL_checklstring(L, 1, &length);
-  ReMatch* match = ilua::toobject<ReMatch>(L, 2, "re.matchinfo");
+  ReMatch* match = ilua::toobject<ReMatch>(L, 2, "re.match");
   int n = lua_gettop(L);
   luaL_Buffer b;
   luaL_buffinit(L, &b);
@@ -568,7 +568,7 @@ static int re_expand(lua_State* L)
 
 static int rem_expand(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   size_t length;
   char const* repl = luaL_checklstring(L, 2, &length);
   luaL_Buffer b;
@@ -598,7 +598,7 @@ static int checkgroup(lua_State* L, int pos, ReProg* prog)
 }
 static int rem_group(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   if (lua_gettop(L) == 1)
     lua_pushinteger(L, 0);
   int n = lua_gettop(L) - 1;
@@ -614,7 +614,7 @@ static int rem_group(lua_State* L)
 }
 static int rem_groups(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   if (lua_gettop(L) == 1)
     lua_pushnil(L);
   else
@@ -630,7 +630,7 @@ static int rem_groups(lua_State* L)
 }
 static int rem_groupdict(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   if (lua_gettop(L) == 1)
     lua_pushnil(L);
   else
@@ -656,7 +656,7 @@ static int rem_groupdict(lua_State* L)
 }
 static int rem_left(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   int group = (lua_isnoneornil(L, 2) ? 0 : checkgroup(L, 2, match->prog));
   if (group < 0 || group > match->prog->captures || match->ovector[group + group] < 0)
     lua_pushnil(L);
@@ -666,7 +666,7 @@ static int rem_left(lua_State* L)
 }
 static int rem_right(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   int group = (lua_isnoneornil(L, 2) ? 0 : checkgroup(L, 2, match->prog));
   if (group < 0 || group > match->prog->captures || match->ovector[group + group + 1] < 0)
     lua_pushnil(L);
@@ -676,7 +676,7 @@ static int rem_right(lua_State* L)
 }
 static int rem_span(lua_State* L)
 {
-  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.matchinfo");
+  ReMatch* match = ilua::checkobject<ReMatch>(L, 1, "re.match");
   int group = (lua_isnoneornil(L, 2) ? 0 : checkgroup(L, 2, match->prog));
   if (group < 0 || group > match->prog->captures || match->ovector[group + group] < 0)
   {
@@ -702,7 +702,7 @@ void bind_re(lua_State* L)
   ilua::bindmethod(L, "sub", re_sub);
   lua_pop(L, 2);
 
-  ilua::newtype<ReMatch>(L, "re.matchinfo");
+  ilua::newtype<ReMatch>(L, "re.match");
   ilua::bindmethod(L, "expand", rem_expand);
   ilua::bindmethod(L, "group", rem_group);
   ilua::bindmethod(L, "groups", rem_groups);

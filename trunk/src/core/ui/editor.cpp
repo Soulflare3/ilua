@@ -65,7 +65,7 @@ EditorSettings EditorSettings::defaultSettings = {
     16, // margin
   },
   { // font
-    12, // size
+    13, // size
     0, // flags
   },
   0xFFFFFF, // bgcolor
@@ -93,7 +93,7 @@ EditorSettings EditorSettings::logSettings = {
     12, // margin
   },
   { // font
-    12, // size
+    13, // size
     0, // flags
   },
   0xFFFFFF, // bgcolor
@@ -534,6 +534,7 @@ void Editor::updateCaret()
   placeCaret();
 
   POINT pt = toPoint(caret);
+  caretX = pt.x;
   SCROLLINFO si;
   memset(&si, 0, sizeof si);
   si.cbSize = sizeof si;
@@ -1032,10 +1033,11 @@ void Editor::untabify(WideString& text)
 
 Editor::Editor(Frame* parent, EditorSettings* set, int id)
   : WindowFrame(parent)
-  , hFont(FontSys::getFont(set->font.size, L"Courier New", set->font.flags))
-  , hFontIt(FontSys::getFont(set->font.size, L"Courier New", set->font.flags | FONT_ITALIC))
-  , hFontBf(FontSys::getFont(set->font.size, L"Courier New", set->font.flags | FONT_BOLD))
+  , hFont(FontSys::getFont(set->font.size, L"Consolas", set->font.flags))
+  , hFontIt(FontSys::getFont(set->font.size, L"Consolas", set->font.flags | FONT_ITALIC | FONT_BOLD))
+  , hFontBf(FontSys::getFont(set->font.size, L"Consolas", set->font.flags | FONT_BOLD))
   , caret(0)
+  , caretX(0)
   , selStart(0)
   , insertMode(true)
   , target(NULL)
@@ -1523,8 +1525,8 @@ WideString Editor::nextKey(POINT& pt, bool bracket)
 void Editor::updateFocus()
 {
   focus.clear();
-  if (caret != selStart)
-    return;
+  //if (caret != selStart)
+  //  return;
   POINT pt = toPoint(caret);
 
   int ctx = lines[pt.y].ctx;
@@ -1650,9 +1652,9 @@ void Editor::updateFocus()
     }
     if (stack == 0)
     {
-      focus.push(fromPoint(pt));
+      focus.push(FocusWord(fromPoint(pt), 1));
       pt = toPoint(caret); pt.x = start;
-      focus.push(fromPoint(pt));
+      focus.push(FocusWord(fromPoint(pt), 1));
     }
   }
   else if (type == -1 && kwInGraph.has(kw))
@@ -1667,7 +1669,7 @@ void Editor::updateFocus()
       if (inKwGraph(stk.top(), next))
       {
         if (stk.length() == 1)
-          focus.push(fromPoint(pt));
+          focus.push(FocusWord(fromPoint(pt), next.length()));
         stk.top() = next;
       }
       else if (kwBegin.has(next))
@@ -1685,7 +1687,7 @@ void Editor::updateFocus()
       if (inKwGraph(prev, stk.top()))
       {
         if (stk.length() == 1)
-          focus.push(fromPoint(pt));
+          focus.push(FocusWord(fromPoint(pt), prev.length()));
         stk.top() = prev;
       }
       else if (kwEnd.has(prev))
@@ -1696,7 +1698,8 @@ void Editor::updateFocus()
     if (focus.length())
     {
       pt = toPoint(caret); pt.x = start;
-      focus.push(fromPoint(pt));
+      focus.push(FocusWord(fromPoint(pt), kw.length()));
     }
   }
+  focus.sort();
 }

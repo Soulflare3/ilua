@@ -22,8 +22,13 @@ static int global_load(lua_State* L)
 }
 static int global_require(lua_State* L)
 {
-  if (!engine(L)->load_module(luaL_checkstring(L, 1)))
-    luaL_error(L, "failed to load module '%s'", lua_tostring(L, 1));
+  if (!engine(L)->load_module(luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL)))
+  {
+    if (lua_isstring(L, 2))
+      luaL_error(L, "failed to load module '%s' (entry point '%s')", lua_tostring(L, 1), lua_tostring(L, 2));
+    else
+      luaL_error(L, "failed to load module '%s'", lua_tostring(L, 1));
+  }
   return 0;
 }
 static int global_exit(lua_State* L)
@@ -41,6 +46,14 @@ static int global_iskindof(lua_State* L)
     lua_getmetatable(L, 1);
     lua_rawgeti(L, -1, 0);
   }
+  else
+    lua_pushnil(L);
+  return 1;
+}
+static int global_objtype(lua_State* L)
+{
+  if (lua_isuserdata(L, 1) && lua_getmetatable(L, 1))
+    lua_rawgeti(L, -1, 0);
   else
     lua_pushnil(L);
   return 1;
@@ -110,6 +123,12 @@ static int global_wipe(lua_State* L)
   }
   lua_settop(L, 1);
   return 1;
+}
+
+static int global_keepalive(lua_State* L)
+{
+  ilua::engine(L)->keepalive();
+  return 0;
 }
 
 static int thread_create(lua_State* L)
@@ -239,7 +258,7 @@ static DWORD WINAPI os_execute_proc(LPVOID arg)
   if (code == STILL_ACTIVE) code = 0;
   lua_State* L = data->engine->lock();
   lua_pushinteger(L, code);
-  data->thread->resume(1);
+  data->thread->resume();
   data->thread->release();
   data->engine->unlock();
   delete data;
@@ -441,46 +460,6 @@ static int time_formatutc(lua_State* L)
   return 1;
 }
 
-static int string_hex(lua_State* L)
-{
-  static char hexl[] = "0123456789abcdef";
-  static char hexu[] = "0123456789ABCDEF";
-  size_t length;
-  char const* str = luaL_checklstring(L, 1, &length);
-  char const* conv = (lua_toboolean(L, 2) ? hexu : hexl);
-  luaL_Buffer b;
-  luaL_buffinit(L, &b);
-  for (size_t i = 0; i < length; i++)
-  {
-    luaL_addchar(&b, conv[(str[i] >> 4) & 0xF]);
-    luaL_addchar(&b, conv[str[i] & 0xF]);
-  }
-  luaL_pushresult(&b);
-  return 1;
-}
-static int string_pad(lua_State* L)
-{
-  size_t length;
-  char const* str = luaL_checklstring(L, 1, &length);
-  int padto = luaL_checkinteger(L, 2);
-
-  if (length == padto)
-    lua_pushvalue(L, 1);
-  else if (length > padto)
-    lua_pushlstring(L, str, padto);
-  else
-  {
-    luaL_Buffer b;
-    luaL_buffinit(L, &b);
-    luaL_addlstring(&b, str, length);
-    char* ptr = luaL_prepbuffsize(&b, padto - length);
-    memset(ptr, 0, padto - length);
-    luaL_addsize(&b, padto - length);
-    luaL_pushresult(&b);
-  }
-  return 1;
-}
-
 static bool isIdStr(char const* str, int len = -1)
 {
   if (len < 0) len = strlen(str);
@@ -651,13 +630,15 @@ void Engine::bind(lua_State* L)
   lua_register(L, "include", global_include);
   lua_register(L, "load", global_load);
   lua_register(L, "require", global_require);
-  lua_register(L, "iskindof", global_iskindof);
-  lua_register(L, "sleep", global_sleep);
-  lua_register(L, "print", global_print);
+  lua_register(L, "keepalive", global_keepalive);
   lua_register(L, "exit", global_exit);
+  lua_register(L, "sleep", global_sleep);
   lua_register(L, "clock", global_clock);
   lua_register(L, "after", global_after);
+  lua_register(L, "iskindof", global_iskindof);
+  lua_register(L, "objtype", global_objtype);
   lua_register(L, "wipe", global_wipe);
+  lua_register(L, "print", global_print);
   lua_register(L, "dump", global_dump);
 
   ilua::openlib(L, "thread");
@@ -667,6 +648,13 @@ void Engine::bind(lua_State* L)
   ilua::bindmethod(L, "unlock", thread_unlock);
   ilua::bindmethod(L, "yield", thread_yield);
   lua_pop(L, 1);
+
+  ilua::newtype<Thread>(L, "thread", "object");
+  ilua::bindmethod(L, "state", thread_state);
+  ilua::bindmethod(L, "suspend", thread_suspend);
+  ilua::bindmethod(L, "resume", thread_resume);
+  ilua::bindmethod(L, "terminate", thread_terminate);
+  lua_pop(L, 2);
 
   ilua::openlib(L, "time");
   ilua::bindmethod(L, "time", time_time);
@@ -689,18 +677,6 @@ void Engine::bind(lua_State* L)
   ilua::bindmethod(L, "__newindex", os_setenv2);
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "environ");
-  lua_pop(L, 1);
-
-  ilua::newtype<Thread>(L, "thread", "object");
-  ilua::bindmethod(L, "state", thread_state);
-  ilua::bindmethod(L, "suspend", thread_suspend);
-  ilua::bindmethod(L, "resume", thread_resume);
-  ilua::bindmethod(L, "terminate", thread_terminate);
-  lua_pop(L, 2);
-
-  ilua::openlib(L, "string");
-  ilua::bindmethod(L, "hex", string_hex);
-  ilua::bindmethod(L, "pad", string_pad);
   lua_pop(L, 1);
 }
 

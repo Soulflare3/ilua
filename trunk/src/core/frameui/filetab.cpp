@@ -550,6 +550,7 @@ void FileTabFrame::setCurSel(int sel)
 }
 void FileTabFrame::setTabPath(int pos, char const* path)
 {
+  tabs[pos].temp = false;
   tabs[pos].path = path;
   tabs[pos].origName = WideString(String::getFileName(path));
   setTabTitle(pos, tabs[pos].origName);

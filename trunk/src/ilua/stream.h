@@ -10,7 +10,7 @@ typedef long long int64;
 namespace ilua
 {
 
-class Stream
+class Stream : public Object
 {
 public:
   virtual char getc() {char c = 0; read(&c, 1); return c;}
@@ -87,6 +87,9 @@ public:
     if (big) res = _byteswap_uint64(res);
     write(&res, 8);
   }
+
+  void serialize(lua_State* L, int index);
+  void deserialize(lua_State* L);
 
   virtual int64 copy(Stream* stream, int64 count = 0);
 

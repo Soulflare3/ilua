@@ -915,7 +915,7 @@ WideString towstring(lua_State* L, int pos, bool inctype)
   case LUA_TBOOLEAN:
     return (lua_toboolean(L, -1) ? L"true" : L"false");
   case LUA_TNUMBER:
-    return WideString::format(L"%.14g", lua_tostring(L, -1));
+    return WideString::format(L"%.14g", lua_tonumber(L, -1));
   case LUA_TSTRING:
     {
       size_t len;

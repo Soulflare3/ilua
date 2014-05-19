@@ -33,8 +33,8 @@ MainWnd::MainWnd(api::Engine* e)
   , dragIndex(-1)
   , iconIndex(0)
 {
-  cfg.get("editorNormal", EditorSettings::defaultSettings);
-  cfg.get("editorOutput", EditorSettings::logSettings);
+  //cfg.get("editorNormal", EditorSettings::defaultSettings);
+  //cfg.get("editorOutput", EditorSettings::logSettings);
   cfg.get("wndSettings", settings);
 
   hIcon[0] = (HICON) LoadImage(getInstance(), MAKEINTRESOURCE(IDI_MAINWND), IMAGE_ICON, 16, 16, 0);
@@ -223,8 +223,14 @@ void MainWnd::openFile(wchar_t const* tmppath)
     return;
   }
 
-  Editor* editor = (Editor*) tabs->addTab(upath,
-    tabs->hasPool() ? NULL : new Editor(tabs));
+  Editor* editor = NULL;
+  if (tabs->getCurSel() >= 0)
+    editor = (Editor*) tabs->getTab(tabs->getCurSel());
+  if (!editor || !tabs->isTabTemp(tabs->getCurSel()) || editor->getTextLength())
+    editor = (Editor*) tabs->addTab(upath,
+      tabs->hasPool() ? NULL : new Editor(tabs));
+  else
+    tabs->setTabPath(tabs->getCurSel(), upath);
   editor->load(path);
   updateTitle();
 }
@@ -350,6 +356,7 @@ uint32 MainWnd::onMessage(uint32 message, uint32 wParam, uint32 lParam)
           editor->save(WideString(tabs->getTabPath(i)));
         }
       }
+      updateTitle();
       break;
     case ID_FILE_EXIT:
       PostMessage(hWnd, WM_CLOSE, 0, 0);

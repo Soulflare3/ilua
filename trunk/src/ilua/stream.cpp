@@ -20,6 +20,24 @@ int64 Stream::copy(Stream* stream, int64 count)
   }
   return done;
 }
+void Stream::serialize(lua_State* L, int index)
+{
+  index = lua_absindex(L, index);
+  ilua::pushobject(L, this);
+  lua_getfield(L, -1, "serialize");
+  lua_pushvalue(L, -2);
+  lua_pushvalue(L, index);
+  ilua::lcall(L, 2, 0);
+  lua_pop(L, 1);
+}
+void Stream::deserialize(lua_State* L)
+{
+  ilua::pushobject(L, this);
+  lua_getfield(L, -1, "deserialize");
+  lua_pushvalue(L, -2);
+  ilua::lcall(L, 1, 0);
+  lua_pop(L, 1);
+}
 
 int isbuffer(lua_State* L, int index)
 {
@@ -34,13 +52,19 @@ char const* tobuffer(lua_State* L, int index, size_t* len)
 char const* checkbuffer(lua_State* L, int index, size_t* len)
 {
   if (Stream* stream = toobject<Stream>(L, index, "stream"))
-    return stream->tolstring(len);
+  {
+    char const* ret = stream->tolstring(len);
+    if (ret) return ret;
+  }
   return luaL_checklstring(L, index, len);
 }
 char const* optbuffer(lua_State* L, int index, char const* d, size_t* len)
 {
   if (Stream* stream = toobject<Stream>(L, index, "stream"))
-    return stream->tolstring(len);
+  {
+    char const* ret = stream->tolstring(len);
+    if (ret) return ret;
+  }
   return luaL_optlstring(L, index, d, len);
 }
 
